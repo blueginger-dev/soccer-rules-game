@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Rules Academy - Learn the Beautiful Game!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-item .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .score-item .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .scenario {
+            margin-bottom: 30px;
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .scenario-icon {
+            font-size: 3em;
+            margin-right: 15px;
+        }
+
+        .scenario-title {
+            font-size: 1.5em;
+            color: #1e3c72;
+            font-weight: bold;
+        }
+
+        .scenario-description {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 1.1em;
+            border-left: 4px solid #00c853;
+        }
+
+        .choices {
+            display: grid;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .choice-btn:active {
+            transform: translateY(0);
+        }
+
+        .choice-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.3s ease;
+        }
+
+        .choice-btn:hover::before {
+            left: 100%;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .feedback.correct {
+            background: #c8e6c9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .feedback.incorrect {
+            background: #ffcdd2;
+            border-left: 4px solid #f44336;
+        }
+
+        .feedback-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .feedback-text {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .next-btn {
+            background: #00c853;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .next-btn:hover {
+            background: #00e676;
+            transform: scale(1.05);
+        }
+
+        .start-screen, .end-screen, .difficulty-screen {
+            text-align: center;
+        }
+
+        .start-screen h2, .end-screen h2, .difficulty-screen h2 {
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .start-screen p, .end-screen p, .difficulty-screen p {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+            color: white;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 200, 83, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 200, 83, 0.4);
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .difficulty-btn {
+            background: white;
+            color: #1e3c72;
+            padding: 30px 40px;
+            border: 3px solid #1e3c72;
+            border-radius: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .difficulty-btn.beginner {
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+
+        .difficulty-btn.beginner:hover {
+            background: #4caf50;
+            color: white;
+        }
+
+        .difficulty-btn.intermediate {
+            border-color: #ff9800;
+            color: #ff9800;
+        }
+
+        .difficulty-btn.intermediate:hover {
+            background: #ff9800;
+            color: white;
+        }
+
+        .difficulty-btn.pro {
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .difficulty-btn.pro:hover {
+            background: #f44336;
+            color: white;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .difficulty-badge.beginner {
+            background: #4caf50;
+            color: white;
+        }
+
+        .difficulty-badge.intermediate {
+            background: #ff9800;
+            color: white;
+        }
+
+        .difficulty-badge.pro {
+            background: #f44336;
+            color: white;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #00c853 0%, #00e676 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .field-animation {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, #4caf50 0%, #66bb6a 50%, #4caf50 100%);
+            background-size: 200% 100%;
+            animation: fieldScroll 3s linear infinite;
+            margin: 20px 0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .field-animation::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 70%;
+            border: 3px solid white;
+            border-radius: 5px;
+        }
+
+        .field-animation::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 100%;
+            background: white;
+        }
+
+        @keyframes fieldScroll {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .trophy {
+            font-size: 5em;
+            animation: celebrate 1s ease infinite;
+        }
+
+        /* Visual Field Styles */
+        .visual-field {
+            background: linear-gradient(180deg, #45a049 0%, #4caf50 50%, #45a049 100%);
+            border-radius: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            position: relative;
+            min-height: 250px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .field-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+        }
+
+        .field-half-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateX(-50%);
+        }
+
+        .center-circle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .penalty-box {
+            position: absolute;
+            width: 25%;
+            height: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .penalty-box.left {
+            left: 0;
+            border-left: none;
+        }
+
+        .penalty-box.right {
+            right: 0;
+            border-right: none;
+        }
+
+        .goal-area {
+            position: absolute;
+            width: 12%;
+            height: 25%;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .goal-area.left {
+            left: 0;
+            border-left: none;
+        }
+
+        .goal-area.right {
+            right: 0;
+            border-right: none;
+        }
+
+        .player {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .player.attacker {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .player.defender {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .player.goalkeeper {
+            background: linear-gradient(135deg, #ffc107, #ffa000);
+            color: white;
+        }
+
+        .ball {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(0,0,0,0.2);
+            transform: translate(-50%, -50%);
+            z-index: 15;
+        }
+
+        .ball::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+        }
+
+        .arrow {
+            position: absolute;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.9);
+            transform-origin: left center;
+            z-index: 5;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid rgba(255, 255, 255, 0.9);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .arrow.pass {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .arrow.run {
+            background: rgba(33, 150, 243, 0.8);
+        }
+
+        .arrow.run::after {
+            border-left-color: rgba(33, 150, 243, 0.8);
+        }
+
+        .label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 20;
+            transform: translate(-50%, -100%);
+            margin-top: -5px;
+        }
+
+        .offside-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(255, 0, 0, 0.6);
+            border: 1px dashed rgba(255, 255, 255, 0.8);
+            z-index: 8;
+        }
+
+        .field-legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: white;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+        .ball.animated {
+            animation: pulse 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>⚽ Soccer Rules Academy <span id="difficulty-display" class="difficulty-badge hidden"></span></h1>
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="label">Score</div>
+                    <div class="value" id="score">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="label">Progress</div>
+                    <div class="value"><span id="current-scenario">0</span>/<span id="total-scenarios">0</span></div>
+                </div>
+                <div class="score-item">
+                    <div class="label">Streak</div>
+                    <div class="value" id="streak">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="difficulty-screen" class="difficulty-screen">
+                <div class="field-animation"></div>
+                <h2>Choose Your Difficulty Level</h2>
+                <p>Select the level that matches your soccer knowledge. Each level has unique scenarios tailored to your skill level!</p>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn beginner" onclick="selectDifficulty('beginner')">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🌱</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">Beginner</div>
+                        <div style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">Basic rules & fundamentals</div>
+                    </button>
+                    <button class="difficulty-btn intermediate" onclick="selectDifficulty('intermediate')">
+                        <div style="font-size: 2em; margin-bottom: 10px;">⚡</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">Intermediate</div>
+                        <div style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">Moderate complexity & nuances</div>
+                    </button>
+                    <button class="difficulty-btn pro" onclick="selectDifficulty('pro')">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🏆</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">Pro</div>
+                        <div style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">Advanced rules & edge cases</div>
+                    </button>
+                </div>
+            </div>
+
+            <div id="start-screen" class="start-screen hidden">
+                <div class="field-animation"></div>
+                <h2>Welcome to the Beautiful Game!</h2>
+                <p>Ready to learn soccer rules through real match scenarios? You'll face challenging situations and learn the rules that make soccer the world's most popular sport!</p>
+                <p><strong>How it works:</strong> You'll be presented with game situations. Make the right call and learn why it's correct. Get points for each correct answer and build your streak!</p>
+                <button class="start-btn" onclick="startGame()">Start Learning! ⚽</button>
+            </div>
+
+            <div id="game-screen" class="hidden">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+                <div id="scenario-container"></div>
+            </div>
+
+            <div id="end-screen" class="end-screen hidden">
+                <div class="trophy">🏆</div>
+                <h2>Congratulations!</h2>
+                <p id="final-message"></p>
+                <p id="final-score"></p>
+                <button class="start-btn" onclick="restartGame()">Play Again! 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedDifficulty = '';
+        let scoreMultiplier = 1;
+
+        const scenarios = [
+            // BEGINNER SCENARIOS
+            {
+                difficulty: 'beginner',
+                icon: "🥅",
+                title: "Corner Kick Confusion",
+                description: "Ball last touched by defender, went over their own goal line (not in goal).",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 18, y: 35 },
+                        { type: 'defender', x: 10, y: 30, label: 'Last touch' },
+                        { type: 'goalkeeper', x: 8, y: 50 }
+                    ],
+                    ball: { x: 2, y: 25, animated: false },
+                    legend: ['Ball over goal line', 'Defender touched last']
+                },
+                choices: [
+                    { text: "Corner kick for the attacking team", correct: true },
+                    { text: "Goal kick for the defending team", correct: false },
+                    { text: "Throw-in for the attacking team", correct: false }
+                ],
+                explanation: "Perfect! When the ball goes over the goal line (outside the goal) and was last touched by the defending team, it's a corner kick for the attacking team. The ball is placed in the corner arc nearest to where it went out.",
+                wrongExplanation: "Not this time! When the defending team is the last to touch the ball before it goes over their own goal line (not in the goal), it's a corner kick for the attacking team. A goal kick would be if the attacking team touched it last."
+            },
+            {
+                difficulty: 'beginner',
+                icon: "🤾",
+                title: "Throw-In Technique",
+                description: "Player takes throw-in with one foot in air. Hands over head correctly.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 50, y: 5, label: 'Thrower ⚠️' }
+                    ],
+                    ball: { x: 50, y: 2, animated: true },
+                    arrows: [{ from: [50, 2], to: [50, 15], type: 'pass' }],
+                    legend: ['Illegal: Foot in air!']
+                },
+                choices: [
+                    { text: "Legal throw-in!", correct: false },
+                    { text: "Illegal - give throw-in to other team", correct: true },
+                    { text: "Let it go - close enough!", correct: false }
+                ],
+                explanation: "Nice catch! For a legal throw-in, the player must have BOTH feet on the ground (at least partially) when releasing the ball. They also need both hands on the ball, throwing from behind and over the head, and must be facing the field. Both feet must touch the ground or the line!",
+                wrongExplanation: "Not quite! A proper throw-in requires both feet to be at least partially on the ground when the ball is released. The thrower can't have both feet in the air. Other requirements: both hands on the ball, from behind and over the head, and facing the field."
+            },
+            {
+                difficulty: 'beginner',
+                icon: "⏱️",
+                title: "Injury Time",
+                description: "90 minutes up, 3 min injury time announced. Team scores in 92nd minute.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 88, y: 50, label: 'Scorer' },
+                        { type: 'goalkeeper', x: 92, y: 50 }
+                    ],
+                    ball: { x: 91, y: 50, animated: true },
+                    legend: ['Clock: 92:00', 'Injury time: +3 min']
+                },
+                choices: [
+                    { text: "Yes - still in injury time!", correct: true },
+                    { text: "No - game should have ended", correct: false },
+                    { text: "Referee's choice", correct: false }
+                ],
+                explanation: "Absolutely right! Injury time (also called stoppage time or added time) is added to the end of each half to make up for time lost to injuries, substitutions, and other stoppages. If 3 minutes were announced, the game continues until at least 93:00. The goal counts!",
+                wrongExplanation: "Not quite! When injury time is announced (like '+3 minutes'), the game continues past the regular 90 minutes. The referee can even add more time if there were additional stoppages during injury time. The goal is valid!"
+            },
+            {
+                difficulty: 'beginner',
+                icon: "🔄",
+                title: "Substitution Rules",
+                description: "Team wants 6th substitution in regular league match. Sub ready at halfway.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 50, y: 50, label: 'Sub #6?' }
+                    ],
+                    legend: ['Already used 5 subs', 'Max usually 5']
+                },
+                choices: [
+                    { text: "Allow it - players need rest!", correct: false },
+                    { text: "Not allowed - maximum 5 subs in most leagues", correct: true },
+                    { text: "Only if the other team agrees", correct: false }
+                ],
+                explanation: "Correct! Most professional leagues allow a maximum of 5 substitutions per team (this was increased from 3 during COVID and has stuck in many leagues). Some competitions allow 3, some allow 5, but there's always a limit. Once you've used all your subs, that's it!",
+                wrongExplanation: "Not quite! There's a maximum number of substitutions allowed in soccer. Most modern leagues allow 5 substitutions (increased from 3), but some still use 3. Once a team has used all their allowed substitutions, they can't make any more changes."
+            },
+            {
+                difficulty: 'beginner',
+                icon: "👥",
+                title: "Number of Players",
+                description: "A team wants to start the match. How many players must they have on the field?",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 30, y: 30, label: '1' },
+                        { type: 'attacker', x: 35, y: 45, label: '2' },
+                        { type: 'attacker', x: 40, y: 60, label: '3' },
+                        { type: 'defender', x: 70, y: 35, label: '9' },
+                        { type: 'defender', x: 75, y: 50, label: '10' },
+                        { type: 'goalkeeper', x: 92, y: 50, label: 'GK' }
+                    ],
+                    ball: { x: 50, y: 50, animated: false },
+                    legend: ['How many total?']
+                },
+                choices: [
+                    { text: "11 players per team (including goalkeeper)", correct: true },
+                    { text: "10 players per team (plus goalkeeper)", correct: false },
+                    { text: "Any number between 7-11 players", correct: false }
+                ],
+                explanation: "Correct! Each team must have exactly 11 players on the field, including the goalkeeper. A match cannot start or continue if a team has fewer than 7 players. If a team drops below 7 players during a match (due to red cards or injuries with no subs left), the match is abandoned.",
+                wrongExplanation: "Not quite! A soccer team has exactly 11 players on the field at a time, including the goalkeeper. While a match can continue with as few as 7 players, the standard number is always 11 players per team."
+            },
+            {
+                difficulty: 'beginner',
+                icon: "🏆",
+                title: "How to Win",
+                description: "Match ends. Team A scored 2 goals, Team B scored 1 goal. Who wins?",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 30, y: 50, label: 'Team A' },
+                        { type: 'defender', x: 70, y: 50, label: 'Team B' }
+                    ],
+                    ball: { x: 50, y: 50, animated: false },
+                    legend: ['Team A: 2 goals', 'Team B: 1 goal']
+                },
+                choices: [
+                    { text: "Team A wins - most goals scored!", correct: true },
+                    { text: "Team B wins - they defended better", correct: false },
+                    { text: "It's a draw - need penalty shootout", correct: false }
+                ],
+                explanation: "Exactly right! The team that scores the most goals wins the match. In soccer, the entire ball must cross the entire goal line between the goalposts and under the crossbar for it to count as a goal. If both teams score the same number of goals, it's a draw (unless it's a knockout competition requiring a winner).",
+                wrongExplanation: "Not correct! In soccer, the team with the most goals at the end of the match wins. Team A scored 2 goals and Team B scored 1, so Team A wins 2-1. It's simple - most goals = victory!"
+            },
+            {
+                difficulty: 'beginner',
+                icon: "⏰",
+                title: "Game Duration",
+                description: "A standard professional soccer match has two halves. How long is each half?",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 50, y: 50 }
+                    ],
+                    ball: { x: 50, y: 50, animated: false },
+                    legend: ['Standard match', 'Two halves']
+                },
+                choices: [
+                    { text: "45 minutes each half (90 minutes total)", correct: true },
+                    { text: "40 minutes each half (80 minutes total)", correct: false },
+                    { text: "30 minutes each half (60 minutes total)", correct: false }
+                ],
+                explanation: "Perfect! A standard soccer match consists of two 45-minute halves, for a total of 90 minutes. There's also injury/stoppage time added at the end of each half to compensate for stoppages during play (injuries, substitutions, time-wasting, etc.).",
+                wrongExplanation: "Not quite! A standard professional soccer match has two halves of 45 minutes each, totaling 90 minutes of regular play time. Plus injury/stoppage time is added to each half. Some youth or amateur leagues may have shorter halves."
+            },
+            {
+                difficulty: 'beginner',
+                icon: "🎯",
+                title: "What Counts as a Goal?",
+                description: "Ball is rolling toward goal. Half of the ball is over the goal line. Does it count?",
+                visual: {
+                    players: [
+                        { type: 'goalkeeper', x: 8, y: 50, label: 'Keeper' }
+                    ],
+                    ball: { x: 2, y: 50, animated: true },
+                    legend: ['Half the ball over line', 'Still in the air']
+                },
+                choices: [
+                    { text: "No goal - entire ball must cross the line", correct: true },
+                    { text: "Goal - half is enough!", correct: false },
+                    { text: "Referee decides based on judgement", correct: false }
+                ],
+                explanation: "Absolutely correct! For a goal to count, the ENTIRE ball must completely cross the goal line between the posts and under the crossbar. If even a tiny part of the ball is still on the line, it's not a goal. This is why goal-line technology was introduced in professional soccer!",
+                wrongExplanation: "Not quite! The entire ball must completely cross the goal line for it to count as a goal. If any part of the ball is still on or above the line, it's not a goal yet. The whole ball has to be over!"
+            },
+            {
+                difficulty: 'beginner',
+                icon: "⚽",
+                title: "Kickoff Rules",
+                description: "Game starts. Can a player score directly from the kickoff without anyone else touching it?",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 48, y: 50, label: 'Kicker' },
+                        { type: 'attacker', x: 52, y: 50 },
+                        { type: 'defender', x: 55, y: 50 }
+                    ],
+                    ball: { x: 50, y: 50, animated: true },
+                    legend: ['Center circle', 'Start of match']
+                },
+                choices: [
+                    { text: "Yes - you can score directly from kickoff!", correct: true },
+                    { text: "No - must pass to teammate first", correct: false },
+                    { text: "No - at least 3 players must touch it", correct: false }
+                ],
+                explanation: "Correct! You CAN score directly from a kickoff! The ball just needs to move forward and you can shoot it straight into the opponent's goal. The kickoff rule changed in 2016 - previously you had to pass to a teammate, but now one player can kick it forward and even score directly!",
+                wrongExplanation: "Actually, you CAN score directly from kickoff! The rules changed in 2016. As long as the ball moves forward from the center spot, you can shoot directly at goal. Though it's extremely rare and difficult to pull off!"
+            },
+            {
+                difficulty: 'beginner',
+                icon: "📍",
+                title: "When is the Ball Out of Play?",
+                description: "Ball is rolling on the sideline but hasn't fully crossed. Is it out of play?",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 50, y: 8, label: 'Chasing ball' }
+                    ],
+                    ball: { x: 50, y: 2, animated: false },
+                    legend: ['Ball touching sideline', 'Not fully over yet']
+                },
+                choices: [
+                    { text: "Still in play - entire ball must cross the line", correct: true },
+                    { text: "Out of play - touching the line counts", correct: false },
+                    { text: "Out of play - need throw-in", correct: false }
+                ],
+                explanation: "Exactly right! The ball is only out of play when the ENTIRE ball crosses the entire line (whether on the ground or in the air). If any part of the ball is still on or over the line, it's still in play! This applies to all boundary lines - sidelines and goal lines.",
+                wrongExplanation: "Not quite! Just like with goals, the entire ball must completely cross the line to be out of play. If the ball is touching or hanging over the line, it's still in play. The whole ball must be completely over!"
+            },
+
+            // INTERMEDIATE SCENARIOS
+            {
+                difficulty: 'intermediate',
+                icon: "🏃",
+                title: "The Offside Trap",
+                description: "Player receives ball behind all defenders, but was in own half when pass was made.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 40, y: 50, label: 'Passer' },
+                        { type: 'attacker', x: 65, y: 30, label: 'Receiver' },
+                        { type: 'defender', x: 70, y: 45 },
+                        { type: 'defender', x: 72, y: 55 },
+                        { type: 'goalkeeper', x: 92, y: 50 }
+                    ],
+                    ball: { x: 40, y: 50, animated: true },
+                    arrows: [{ from: [40, 50], to: [65, 30], type: 'pass' }],
+                    legend: ['Blue = Attack', 'Red = Defend', 'Yellow = Keeper']
+                },
+                choices: [
+                    { text: "It's offside - blow the whistle!", correct: false },
+                    { text: "Play on - it's a legal play!", correct: true },
+                    { text: "Give a throw-in to the defending team", correct: false }
+                ],
+                explanation: "Correct! A player cannot be offside in their own half of the field. Offside only applies when a player is in the opponent's half when the ball is played to them AND they're ahead of the second-to-last defender (usually the last defender, since the goalkeeper is typically the last).",
+                wrongExplanation: "Not quite! A player cannot be offside in their own half. The offside rule only applies when you're in the attacking half of the field. Remember: you need to be in the opponent's half AND ahead of the second-to-last defender when the ball is played."
+            },
+            {
+                difficulty: 'intermediate',
+                icon: "✋",
+                title: "Hand Ball or Not?",
+                description: "Defender sliding to block. Ball hits arm supporting their body on ground.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 30, y: 50, label: 'Shooter' },
+                        { type: 'defender', x: 18, y: 55, label: 'Sliding' },
+                        { type: 'goalkeeper', x: 8, y: 50 }
+                    ],
+                    ball: { x: 22, y: 52, animated: true },
+                    arrows: [{ from: [30, 50], to: [22, 52], type: 'pass' }],
+                    legend: ['Blue = Attack', 'Red = Defend', 'Yellow = Keeper']
+                },
+                choices: [
+                    { text: "Penalty kick - it's handball!", correct: false },
+                    { text: "Play on - natural position!", correct: true },
+                    { text: "Free kick outside the box", correct: false }
+                ],
+                explanation: "Excellent call! When a player's arm is in a natural position supporting their body (like during a slide), it's not considered handball. The rule considers whether the arm is in an unnatural position or if the player deliberately moves their hand/arm towards the ball.",
+                wrongExplanation: "Not this time! Modern handball rules consider the position of the arm. If the arm is supporting the body in a natural position (like during a slide), it's not handball. It needs to be in an unnatural position or deliberately moved toward the ball."
+            },
+            {
+                difficulty: 'intermediate',
+                icon: "🟨",
+                title: "Card Decision",
+                description: "Player with yellow card commits second reckless foul - late tackle.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 60, y: 45, label: 'Fouled' },
+                        { type: 'defender', x: 58, y: 48, label: '⚠️ Has Yellow' }
+                    ],
+                    ball: { x: 55, y: 40, animated: false },
+                    legend: ['Blue = Attack', 'Red = Defend', '⚠️ = Already has card']
+                },
+                choices: [
+                    { text: "Give another yellow card (which means red!)", correct: true },
+                    { text: "Just give a free kick, no card needed", correct: false },
+                    { text: "Give a straight red card", correct: false }
+                ],
+                explanation: "Perfect! Since the player already has a yellow card, a second yellow means they get sent off (shown a red card too). Two yellow cards = automatic red card and the player must leave the field. The team plays with one less player for the rest of the match.",
+                wrongExplanation: "Not quite right! This player already has a yellow card, so a second yellow means they must be sent off. The referee shows the second yellow card followed by a red card. Two yellows always equal a red, and the player is ejected from the game."
+            },
+            {
+                difficulty: 'intermediate',
+                icon: "⚽",
+                title: "Goal or No Goal?",
+                description: "Ball crosses goal line. Assistant referee's flag is up for offside, but main referee disagrees.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 85, y: 50, label: 'Scorer' },
+                        { type: 'defender', x: 80, y: 55 },
+                        { type: 'goalkeeper', x: 92, y: 50 }
+                    ],
+                    ball: { x: 93, y: 50, animated: true },
+                    legend: ['Blue = Attack', 'Red = Defend', 'Ball crossed line!']
+                },
+                choices: [
+                    { text: "Goal! Referee's decision is final!", correct: true },
+                    { text: "No goal - listen to the assistant referee", correct: false },
+                    { text: "Check with the assistant first, then decide", correct: false }
+                ],
+                explanation: "Correct! The referee has the final say on all decisions. While assistant referees provide valuable input, the center referee makes the ultimate call. If the referee believes there was no offside and the ball crossed the line, it's a goal! (Though in professional games with VAR, this could be reviewed.)",
+                wrongExplanation: "Not quite! While assistant referees help with offside calls, the center referee has the final authority on all decisions. The referee can overrule the assistant if they disagree. The referee's decision is what counts!"
+            },
+            {
+                difficulty: 'intermediate',
+                icon: "🎯",
+                title: "Penalty Kick Drama",
+                description: "Defender pushes attacker in penalty box, but ball was already out of play.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 15, y: 50, label: 'Pushed' },
+                        { type: 'defender', x: 13, y: 52 },
+                        { type: 'goalkeeper', x: 8, y: 50 }
+                    ],
+                    ball: { x: 5, y: 20, animated: false },
+                    legend: ['Blue = Attack', 'Red = Defend', 'Ball out of play!']
+                },
+                choices: [
+                    { text: "Penalty kick!", correct: false },
+                    { text: "No penalty - ball was out of play", correct: true },
+                    { text: "Yellow card but no penalty", correct: false }
+                ],
+                explanation: "Spot on! Fouls can only be called when the ball is in play. Since the ball was already out of play, no penalty can be given. However, the referee might still have a word with the player about their conduct!",
+                wrongExplanation: "Not this time! A foul can only be awarded if the ball is in play. Once the ball is out of play (over the line, out of bounds, etc.), no fouls can be called until play restarts. The push happened too late!"
+            },
+            {
+                difficulty: 'intermediate',
+                icon: "🎯",
+                title: "Penalty Kick Encroachment",
+                description: "During penalty kick, defender enters box before kick is taken. Ball is saved by keeper.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 15, y: 50, label: 'Kicker' },
+                        { type: 'defender', x: 20, y: 45, label: 'Early!' },
+                        { type: 'goalkeeper', x: 8, y: 50, label: 'Saved!' }
+                    ],
+                    ball: { x: 8, y: 50, animated: false },
+                    legend: ['Defender entered too early', 'Keeper saved it']
+                },
+                choices: [
+                    { text: "Goal kick - keeper saved it fairly", correct: false },
+                    { text: "Retake the penalty - encroachment", correct: true },
+                    { text: "Award goal to attacking team", correct: false }
+                ],
+                explanation: "Correct! This is encroachment. When a player (other than the kicker and keeper) enters the penalty area or arc before the ball is kicked, the penalty must be retaken if it affects the outcome. Since the defender entered early and the ball was saved, the attacking team gets another chance!",
+                wrongExplanation: "Not quite! The defender entered the penalty area before the kick was taken - this is encroachment. Since it affected the outcome (the save), the penalty must be retaken. All players except the kicker and keeper must stay outside the box and arc until the ball is kicked."
+            },
+            {
+                difficulty: 'intermediate',
+                icon: "🔄",
+                title: "Halftime Break",
+                description: "First half ends 0-0. How long is the halftime break in a standard match?",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 30, y: 50 },
+                        { type: 'defender', x: 70, y: 50 }
+                    ],
+                    ball: { x: 50, y: 50, animated: false },
+                    legend: ['Half time', 'Break time']
+                },
+                choices: [
+                    { text: "15 minutes maximum", correct: true },
+                    { text: "10 minutes exactly", correct: false },
+                    { text: "20 minutes maximum", correct: false }
+                ],
+                explanation: "Perfect! The halftime interval must not exceed 15 minutes. The duration is determined before the match and can be shorter, but it cannot be longer than 15 minutes. This gives players time to rest, receive tactical instructions, and recover for the second half.",
+                wrongExplanation: "Not quite! According to the Laws of the Game, the halftime interval must not exceed 15 minutes. While it can be shorter (often 10-15 minutes in practice), it cannot be longer than 15 minutes without special permission."
+            },
+
+            // PRO SCENARIOS
+            {
+                difficulty: 'pro',
+                icon: "🤾",
+                title: "Advanced Throw-In",
+                description: "Player takes throw-in. Feet on ground, but steps onto field before releasing ball.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 50, y: 5, label: 'Thrower ⚠️' }
+                    ],
+                    ball: { x: 50, y: 2, animated: true },
+                    arrows: [{ from: [50, 2], to: [50, 15], type: 'pass' }],
+                    legend: ['Illegal: On field!']
+                },
+                choices: [
+                    { text: "Legal throw-in!", correct: false },
+                    { text: "Illegal - give throw-in to other team", correct: true },
+                    { text: "Play on - minor infraction", correct: false }
+                ],
+                explanation: "Excellent eye! The thrower must have part of each foot on or outside the touchline when releasing the ball. Stepping onto the field before releasing makes it illegal. This is a subtle but important rule that catches many players!",
+                wrongExplanation: "Not quite! The thrower must have part of each foot on the touchline or on the ground outside it. Stepping completely onto the field before releasing the ball is illegal. This restart goes to the other team."
+            },
+            {
+                difficulty: 'pro',
+                icon: "🔄",
+                title: "Backpass Rule",
+                description: "Defender deliberately passes ball with foot to own goalkeeper, who picks it up with hands.",
+                visual: {
+                    players: [
+                        { type: 'defender', x: 20, y: 50, label: 'Passer' },
+                        { type: 'goalkeeper', x: 8, y: 50, label: 'Catches!' }
+                    ],
+                    ball: { x: 8, y: 50, animated: true },
+                    arrows: [{ from: [20, 50], to: [8, 50], type: 'pass' }],
+                    legend: ['Deliberate pass', 'GK uses hands']
+                },
+                choices: [
+                    { text: "Play on - legal play", correct: false },
+                    { text: "Indirect free kick to attacking team", correct: true },
+                    { text: "Direct free kick and yellow card", correct: false }
+                ],
+                explanation: "Spot on! The backpass rule states that a goalkeeper cannot handle the ball if it was deliberately kicked to them by a teammate. This results in an indirect free kick from where the keeper touched it. The rule was introduced to prevent time-wasting and keep the game flowing!",
+                wrongExplanation: "Not quite! This is the backpass rule - goalkeepers cannot pick up the ball if deliberately kicked to them by a teammate. It's an indirect free kick for the opposing team, taken from where the keeper handled it. Header passes to the keeper are still allowed though!"
+            },
+            {
+                difficulty: 'pro',
+                icon: "⚖️",
+                title: "Playing Advantage",
+                description: "Defender fouls attacker, but attacker stays on feet and has clear path to goal.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 35, y: 50, label: 'Fouled but continues' },
+                        { type: 'defender', x: 33, y: 52, label: 'Fouled' },
+                        { type: 'goalkeeper', x: 8, y: 50 }
+                    ],
+                    ball: { x: 37, y: 48, animated: true },
+                    legend: ['Foul occurred', 'But attacker has advantage']
+                },
+                choices: [
+                    { text: "Stop play immediately - it's a foul", correct: false },
+                    { text: "Play advantage - let play continue", correct: true },
+                    { text: "Wait 5 seconds then decide", correct: false }
+                ],
+                explanation: "Perfect application of the advantage rule! When a foul occurs but stopping play would benefit the team that was fouled against, the referee can allow play to continue. If the advantage doesn't materialize within a few seconds, the referee can still call back the foul. This keeps the game flowing and rewards skillful play!",
+                wrongExplanation: "Not this time! This is a perfect situation for playing advantage. The fouled player maintains possession and has a goal-scoring opportunity. Stopping play would actually hurt the attacking team. The referee should signal advantage and let play continue!"
+            },
+            {
+                difficulty: 'pro',
+                icon: "👟",
+                title: "Equipment Violation",
+                description: "Player's boot comes off during play. They continue playing without it and score.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 12, y: 50, label: 'No boot! ⚠️' },
+                        { type: 'goalkeeper', x: 8, y: 50 }
+                    ],
+                    ball: { x: 9, y: 50, animated: true },
+                    legend: ['Player missing boot', 'Scores goal!']
+                },
+                choices: [
+                    { text: "Goal stands - no rule broken", correct: false },
+                    { text: "No goal - player must have proper equipment", correct: true },
+                    { text: "Goal stands but player gets yellow card", correct: false }
+                ],
+                explanation: "Correct! Players must wear proper and safe equipment at all times during play. If a player loses a boot, they must leave the field to fix it or the referee should stop play. Playing without proper footwear is dangerous and not allowed. The goal would not count!",
+                wrongExplanation: "Not quite! Players are required to wear proper and complete equipment, including both boots. If a boot comes off, the player should stop playing or the referee should stop the game. Continuing to play and scoring without proper equipment means the goal doesn't count!"
+            },
+            {
+                difficulty: 'pro',
+                icon: "🦵",
+                title: "Dangerous Play",
+                description: "Attacker and keeper go for ball. Attacker raises foot high near keeper's head. No contact.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 12, y: 50, label: 'High foot!' },
+                        { type: 'goalkeeper', x: 10, y: 52, label: 'Keeper' }
+                    ],
+                    ball: { x: 11, y: 50, animated: true },
+                    legend: ['No contact made', 'But dangerous!']
+                },
+                choices: [
+                    { text: "Play on - they got the ball!", correct: false },
+                    { text: "Indirect free kick - dangerous play", correct: true },
+                    { text: "Direct free kick for the keeper's team", correct: false }
+                ],
+                explanation: "Great call! This is dangerous play - even though there was no contact, raising your foot near an opponent's head is considered dangerous. It's an indirect free kick (meaning you can't score directly from it). Safety comes first in soccer!",
+                wrongExplanation: "Not this time! Even without contact, playing in a dangerous manner (like a high foot near someone's head) is a foul. It's called dangerous play and results in an indirect free kick. The rule protects player safety even when contact doesn't occur."
+            },
+            {
+                difficulty: 'pro',
+                icon: "🔴",
+                title: "DOGSO - Denial of Obvious Goal-Scoring Opportunity",
+                description: "Last defender deliberately fouls attacker who has clear breakaway. Outside penalty box.",
+                visual: {
+                    players: [
+                        { type: 'attacker', x: 40, y: 50, label: 'Clear on goal' },
+                        { type: 'defender', x: 38, y: 52, label: 'Last defender' },
+                        { type: 'goalkeeper', x: 8, y: 50 }
+                    ],
+                    ball: { x: 42, y: 48, animated: false },
+                    legend: ['Outside box', 'Clear goal chance', 'Deliberate foul']
+                },
+                choices: [
+                    { text: "Yellow card and free kick", correct: false },
+                    { text: "Red card and free kick - DOGSO", correct: true },
+                    { text: "Play advantage - clear chance anyway", correct: false }
+                ],
+                explanation: "Perfect! This is DOGSO (Denial of an Obvious Goal-Scoring Opportunity). When the last defender deliberately denies a clear goal-scoring opportunity outside the penalty area, it's a straight red card. The attacker had a clear path to goal with no other defenders. Inside the box, it would be a penalty and yellow card if attempting to play the ball.",
+                wrongExplanation: "Not quite! This is a red card offense for DOGSO (Denying an Obvious Goal-Scoring Opportunity). The attacker had a clear breakaway with no other defenders, and the foul was deliberate and denied this opportunity. It's one of the rare straight red card situations!"
+            }
+        ];
+
+        let currentScenario = 0;
+        let score = 0;
+        let streak = 0;
+        let answered = false;
+        let filteredScenarios = [];
+
+        function selectDifficulty(difficulty) {
+            selectedDifficulty = difficulty;
+
+            // Set score multiplier based on difficulty
+            if (difficulty === 'beginner') {
+                scoreMultiplier = 1;
+            } else if (difficulty === 'intermediate') {
+                scoreMultiplier = 1.5;
+            } else if (difficulty === 'pro') {
+                scoreMultiplier = 2;
+            }
+
+            // Filter scenarios by difficulty
+            filteredScenarios = scenarios.filter(s => s.difficulty === difficulty);
+
+            // Update difficulty display badge
+            const badge = document.getElementById('difficulty-display');
+            badge.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+            badge.className = 'difficulty-badge ' + difficulty;
+            badge.classList.remove('hidden');
+
+            // Show start screen
+            document.getElementById('difficulty-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('total-scenarios').textContent = filteredScenarios.length;
+            currentScenario = 0;
+            score = 0;
+            streak = 0;
+            answered = false;
+            updateScore();
+            showScenario();
+        }
+
+        function generateVisualField(visual) {
+            if (!visual) return '';
+
+            let fieldHTML = '<div class="visual-field"><div class="field-container">';
+
+            // Add field markings
+            fieldHTML += '<div class="field-half-line"></div>';
+            fieldHTML += '<div class="center-circle"></div>';
+            fieldHTML += '<div class="penalty-box left"></div>';
+            fieldHTML += '<div class="penalty-box right"></div>';
+            fieldHTML += '<div class="goal-area left"></div>';
+            fieldHTML += '<div class="goal-area right"></div>';
+
+            // Add players
+            if (visual.players) {
+                visual.players.forEach(player => {
+                    const labelHTML = player.label ? `<div class="label" style="left: ${player.x}%; top: ${player.y}%;">${player.label}</div>` : '';
+                    fieldHTML += `<div class="player ${player.type}" style="left: ${player.x}%; top: ${player.y}%;"></div>${labelHTML}`;
+                });
+            }
+
+            // Add ball
+            if (visual.ball) {
+                const animClass = visual.ball.animated ? 'animated' : '';
+                fieldHTML += `<div class="ball ${animClass}" style="left: ${visual.ball.x}%; top: ${visual.ball.y}%;"></div>`;
+            }
+
+            // Add arrows
+            if (visual.arrows) {
+                visual.arrows.forEach(arrow => {
+                    const [x1, y1] = arrow.from;
+                    const [x2, y2] = arrow.to;
+                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                    fieldHTML += `<div class="arrow ${arrow.type}" style="left: ${x1}%; top: ${y1}%; width: ${length}%; transform: rotate(${angle}deg);"></div>`;
+                });
+            }
+
+            fieldHTML += '</div>'; // close field-container
+
+            // Add legend
+            if (visual.legend) {
+                fieldHTML += '<div class="field-legend">';
+                visual.legend.forEach(item => {
+                    fieldHTML += `<div class="legend-item">${item}</div>`;
+                });
+                fieldHTML += '</div>';
+            }
+
+            fieldHTML += '</div>'; // close visual-field
+            return fieldHTML;
+        }
+
+        function showScenario() {
+            if (currentScenario >= filteredScenarios.length) {
+                endGame();
+                return;
+            }
+
+            answered = false;
+            const scenario = filteredScenarios[currentScenario];
+            const container = document.getElementById('scenario-container');
+
+            let choicesHTML = '';
+            scenario.choices.forEach((choice, index) => {
+                choicesHTML += `
+                    <button class="choice-btn" onclick="checkAnswer(${index})">
+                        ${choice.text}
+                    </button>
+                `;
+            });
+
+            const visualHTML = generateVisualField(scenario.visual);
+
+            container.innerHTML = `
+                <div class="scenario">
+                    <div class="scenario-header">
+                        <div class="scenario-icon">${scenario.icon}</div>
+                        <div class="scenario-title">${scenario.title}</div>
+                    </div>
+                    ${visualHTML}
+                    <div class="scenario-description">${scenario.description}</div>
+                    <div class="choices">${choicesHTML}</div>
+                </div>
+            `;
+
+            updateProgress();
+        }
+
+        function checkAnswer(choiceIndex) {
+            if (answered) return;
+            answered = true;
+
+            const scenario = filteredScenarios[currentScenario];
+            const choice = scenario.choices[choiceIndex];
+            const isCorrect = choice.correct;
+
+            if (isCorrect) {
+                score += Math.round(10 * scoreMultiplier);
+                streak++;
+                showFeedback(true, scenario.explanation);
+            } else {
+                streak = 0;
+                showFeedback(false, scenario.wrongExplanation);
+            }
+
+            updateScore();
+        }
+
+        function showFeedback(correct, explanation) {
+            const scenario = document.querySelector('.scenario');
+            const feedbackClass = correct ? 'correct' : 'incorrect';
+            const feedbackTitle = correct ? '✅ Correct!' : '❌ Not quite!';
+
+            const feedbackHTML = `
+                <div class="feedback ${feedbackClass}">
+                    <div class="feedback-title">${feedbackTitle}</div>
+                    <div class="feedback-text">${explanation}</div>
+                    <button class="next-btn" onclick="nextScenario()">Next Scenario →</button>
+                </div>
+            `;
+
+            scenario.innerHTML += feedbackHTML;
+        }
+
+        function nextScenario() {
+            currentScenario++;
+            showScenario();
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('current-scenario').textContent = currentScenario + 1;
+        }
+
+        function updateProgress() {
+            const progress = ((currentScenario + 1) / filteredScenarios.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function endGame() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.remove('hidden');
+
+            const maxScore = Math.round(filteredScenarios.length * 10 * scoreMultiplier);
+            const percentage = (score / maxScore) * 100;
+            let message = '';
+
+            if (percentage === 100) {
+                message = 'Perfect score! You\'re a soccer rules expert! ⭐';
+            } else if (percentage >= 80) {
+                message = 'Excellent work! You really know your soccer! 🌟';
+            } else if (percentage >= 60) {
+                message = 'Great job! You\'re ready for the stadium! 👏';
+            } else {
+                message = 'Good effort! Try again to master the rules! 💪';
+            }
+
+            document.getElementById('final-message').textContent = message;
+            document.getElementById('final-score').innerHTML = `
+                You scored <strong>${score}</strong> out of ${maxScore} points!<br>
+                That's ${percentage.toFixed(0)}% correct!
+            `;
+        }
+
+        function restartGame() {
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('difficulty-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
